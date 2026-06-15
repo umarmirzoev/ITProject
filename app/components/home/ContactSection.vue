@@ -3,7 +3,7 @@ const budget = ref(0)
 </script>
 
 <template>
-  <section class="contact">
+  <section id="contact" class="contact">
     <div class="contact__inner">
       <div class="contact__panel">
         <div class="contact__info">
@@ -370,8 +370,8 @@ const budget = ref(0)
   margin: 0;
   padding: 0.56rem 0.95rem;
   border-radius: 62.4375rem;
-  background: #f7ebe7;
-  color: #a08f86;
+  background: #e8f0ef;
+  color: #5a7a77;
   font-size: 0.58rem;
   text-align: center;
 }

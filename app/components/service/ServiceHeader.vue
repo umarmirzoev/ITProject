@@ -111,7 +111,7 @@ const serviceCards = [
 }
 
 .service-page__title span {
-  color: #ff6b00;
+  color: #103e3c;
 }
 
 .service-page__copy {

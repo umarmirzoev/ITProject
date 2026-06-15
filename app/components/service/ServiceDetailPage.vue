@@ -36,67 +36,77 @@ const serviceDescriptions: Record<ServiceName, string> = {
   'Cross-Industry Services': 'Industry expertise meets technical excellence. We deliver specialized solutions tailored to the unique challenges of healthcare, fintech, manufacturing, and more.'
 }
 
-const servicesData: Record<string, Array<{ title: string; description: string }>> = {
+const servicesData: Record<string, Array<{ title: string; description: string; fullWidth?: boolean }>> = {
   'End-to-End IoT Services': [
     { title: 'IoT software development', description: 'We architect and build the cloud platforms, mobile apps, and data pipelines necessary to connect, manage, and scale your entire IoT solution.' },
     { title: 'IoT product development', description: 'Our team guides your connected device from initial concept and prototyping through to mass production and market launch.' },
     { title: 'IoT app development', description: 'We build mobile and web applications that connect end users to their devices, supporting onboarding, real-time monitoring, alerts, and remote control across iOS, Android, and the browser.' },
-    { title: 'IoT consulting', description: 'Our strategic expertise helps you define your IoT roadmap, select the right technologies, and identify high-impact opportunities for your business.' }
+    { title: 'IoT consulting', description: 'Our strategic expertise helps you define your IoT roadmap, select the right technologies, and identify high-impact opportunities for your business.' },
+    { title: 'IoT compliance', description: 'ItGraf handles documentation and certification readiness of your IoT product from HIPAA and GDPR to FCC and IEC 62443.' },
+    { title: 'IoT security', description: 'We protect your connected devices and platforms with secure boot, end-to-end encryption, and continuous vulnerability assessment built into the product from day one.' },
+    { title: 'IoT data analytics', description: 'Our experts turn raw telemetry from your connected devices into actionable insight, using purpose-built analytics pipelines and visualization layers that highlight what matters.' },
+    { title: 'IoT integration', description: 'We connect your IoT solution to your existing enterprise systems, third-party platforms, and cloud services, so data flows cleanly across your business.' },
+    { title: 'IoT team extension', description: 'Our experienced IoT engineers extend your in-house capacity, integrating into your workflows on dedicated, long-term assignments.', fullWidth: true }
   ],
   'Hardware Design & Development': [
     { title: 'PCB design and layout', description: 'We specialize in multi-layer PCB design and layout, focusing on signal integrity, power efficiency, and design for manufacturability (DFM).' },
     { title: 'Industrial design', description: 'Our design partners create aesthetically compelling and ergonomic product enclosures that enhance user interaction and align with your brand identity.' },
     { title: 'Power electronics design', description: 'We engineer sophisticated power supply solutions, from battery management systems (BMS) to high-efficiency converters, ensuring stable power for your device.' },
-    { title: 'Mechanical engineering', description: 'We provide complete mechanical design services, including 3D modeling, thermal analysis, and enclosure design to ensure your hardware is robust and durable.' }
+    { title: 'Mechanical engineering', description: 'We provide complete mechanical design services, including 3D modeling, thermal analysis, and enclosure design to ensure your hardware is robust and durable.' },
+    { title: 'FPGA design', description: 'Accelerate complex computations at the hardware level with our custom FPGA design and VHDL/Verilog programming services.', fullWidth: true }
   ],
   'Embedded Development': [
     { title: 'Firmware development', description: 'We write clean, efficient, and reliable low-level code that controls your hardware\'s core functions and ensures optimal performance.' },
     { title: 'Edge computing', description: 'We empower your devices with on-board processing capabilities, enabling real-time decision-making, reduced latency, and lower data transmission costs.' },
     { title: 'GUI development', description: 'We design and implement intuitive and responsive graphical user interfaces (GUIs) for embedded screens, prioritizing usability and a modern user experience.' },
-    { title: 'Wireless communication protocols', description: 'Our engineers are experts in integrating and optimizing a wide range of wireless protocols, including Wi-Fi, Bluetooth, LoRaWAN, and Cellular (LTE-M/NB-IoT).' }
+    { title: 'Wireless communication protocols', description: 'Our engineers are experts in integrating and optimizing a wide range of wireless protocols, including Wi-Fi, Bluetooth, LoRaWAN, and Cellular (LTE-M/NB-IoT).', fullWidth: true }
   ],
   'Rust Development': [
-    { title: 'Rust backend services', description: 'Build fast, reliable backend services using Rust with memory safety guarantees.' },
-    { title: 'Embedded Rust', description: 'Leverage Rust for embedded systems development with superior performance and safety.' },
-    { title: 'CLI tools', description: 'Create powerful command-line applications using modern Rust practices.' },
-    { title: 'Performance optimization', description: 'Optimize your Rust applications for maximum speed and efficiency.' }
+    { title: 'Rust consulting', description: 'Our experts provide strategic advice, team training, and code reviews to help you successfully integrate Rust into your existing projects and workflows.' },
+    { title: 'Rust for embedded systems', description: 'Rust\'s safety guarantees and performance let us build highly reliable and secure firmware for resource-constrained embedded devices.' },
+    { title: 'Rust for high load systems', description: 'We build fast and concurrent backend systems, microservices, and APIs in Rust, designed to handle massive scale and high throughput.', fullWidth: true }
   ],
   'AI & ML Services': [
-    { title: 'Machine learning models', description: 'Design and train custom ML models tailored to your specific business needs.' },
-    { title: 'AI integration', description: 'Seamlessly integrate AI capabilities into your existing products and platforms.' },
-    { title: 'Data processing pipelines', description: 'Build scalable data processing and analysis pipelines for AI applications.' },
-    { title: 'Computer vision', description: 'Develop advanced computer vision solutions for your applications.' }
+    { title: 'AI consulting', description: 'Our AI consultants assess your business processes, identify high-value AI use cases, and define a practical roadmap for adoption that fits your data, your team, and your goals.' },
+    { title: 'Machine Learning development', description: 'We build, train, and deploy custom machine learning models tailored to your data, your domain, and your accuracy targets.' },
+    { title: 'Edge AI development & consulting', description: 'We deploy AI models directly on edge devices, enabling real-time inference, reduced latency, and lower cloud costs while keeping sensitive data on-device.', fullWidth: true }
   ],
   'Data Services': [
-    { title: 'Data analytics', description: 'Transform raw data into actionable insights with advanced analytics techniques.' },
-    { title: 'Data engineering', description: 'Build robust data pipelines and infrastructure for data processing at scale.' },
-    { title: 'Business intelligence', description: 'Create comprehensive BI solutions to drive data-driven decision making.' },
-    { title: 'Data visualization', description: 'Design intuitive visualizations that tell compelling data stories.' }
+    { title: 'Data engineering', description: 'We build and manage scalable data pipelines (ETL/ELT) to collect, process, and organize your data, making it accessible and ready for analysis.' },
+    { title: 'Data visualization consulting', description: 'Our team designs dashboards and visualization layers that turn complex datasets into clear, decision-ready views for executives, analysts, and operational teams.' },
+    { title: 'Data mining services', description: 'We extract patterns, correlations, and trends from your historical data using statistical methods and machine learning to reveal insights you would otherwise miss.' },
+    { title: 'Big Data services', description: 'We harness distributed computing to analyze massive datasets, enabling AI modeling and complex insights at scale.' },
+    { title: 'Data science consulting', description: 'Our data scientists work with your team to define data strategy, validate hypotheses, and translate business questions into reliable data products.', fullWidth: true }
   ],
   
   'Compliance and Security': [
-    { title: 'Security audits', description: 'Comprehensive security assessments and vulnerability testing of your systems.' },
-    { title: 'Compliance consulting', description: 'Navigate complex compliance requirements including HIPAA, GDPR, and more.' },
-    { title: 'Security implementation', description: 'Implement security best practices and frameworks across your organization.' },
-    { title: 'Incident response', description: 'Rapid response and remediation for security incidents.' }
+    { title: 'Cyber security consulting', description: 'Our consultants assess your current security maturity, identify gaps, and create a roadmap to strengthen your defenses across infrastructure, applications, and operations.' },
+    { title: 'PCI compliance', description: 'We guide payment-handling organizations through PCI DSS compliance, from initial gap assessment to remediation and certification readiness.' },
+    { title: 'Security & encryption for IoT devices', description: 'ItGraf implements end-to-end encryption and secure boot mechanisms to protect your devices and data from unauthorized access and tampering.' },
+    { title: 'Security & encryption for IoT devices', description: 'Implement end-to-end encryption and secure boot mechanisms to protect your devices and data from unauthorized access and tampering.' }
   ],
   'IT Services': [
-    { title: 'Infrastructure management', description: 'Manage and optimize your IT infrastructure for performance and reliability.' },
-    { title: 'Cloud services', description: 'Migrate to and optimize cloud infrastructure for your operations.' },
-    { title: 'DevOps solutions', description: 'Implement modern DevOps practices for continuous delivery and deployment.' },
-    { title: 'System monitoring', description: 'Real-time monitoring and alerting for your critical systems.' }
+    { title: 'IT consulting', description: 'Our IT consultants work with your leadership to align technology strategy with business goals, covering infrastructure planning, vendor selection, and modernization roadmaps.' },
+    { title: 'Azure consulting', description: 'We help you design, deploy, and optimize Microsoft Azure environments, covering migration, cost management, and architecture best practices.' },
+    { title: 'AWS consulting', description: 'Our AWS-certified team architects and operates AWS environments tuned to your performance, security, and cost requirements.' },
+    { title: 'Cloud consulting services', description: 'ItGraf advises on cloud strategy across providers, helping you choose the right platforms and migration paths for each workload.' },
+    { title: 'DevOps consulting', description: 'We streamline your development lifecycle and enhance reliability with CI/CD pipeline implementation, infrastructure-as-code, and expert cloud migration strategies.', fullWidth: true }
   ],
   'Custom Software Development': [
-    { title: 'Web application development', description: 'Build modern web applications using cutting-edge technologies.' },
-    { title: 'Mobile app development', description: 'Create native and cross-platform mobile applications.' },
-    { title: 'API development', description: 'Design and develop robust APIs for your platform ecosystem.' },
-    { title: 'Legacy modernization', description: 'Modernize legacy systems while preserving business logic.' }
+    { title: 'Solution architecture consulting', description: 'Our architects design scalable, secure, and resilient system blueprints that align your technology stack with your long-term business objectives.' },
+    { title: 'Mobile application development', description: 'We create high-performance native (iOS/Android) and cross-platform mobile apps that provide seamless control and interaction with your connected products.' },
+    { title: 'SaaS development', description: 'Our experts build multi-tenant SaaS applications with subscription billing, role-based access, and the scalability your customer base requires.' },
+    { title: 'Enterprise software development', description: 'ItGraf develops custom enterprise software for large organizations, from ERP and CRM extensions to internal platforms that fit your existing business processes.' },
+    { title: 'QA & ATQC (Automated Testing & Quality Control)', description: 'We ensure product excellence through comprehensive quality assurance, from manual testing to the development of sophisticated automated test frameworks.' },
+    { title: 'UI/UX design', description: 'We craft user-centric and visually engaging interfaces that simplify complex interactions and deliver an exceptional, intuitive user experience.' }
   ],
   'Cross-Industry Services': [
-    { title: 'Healthcare solutions', description: 'Specialized services for the healthcare and medical device industry.' },
-    { title: 'Financial services', description: 'Financial technology solutions with enterprise-grade security.' },
-    { title: 'Manufacturing solutions', description: 'Industry-specific solutions for manufacturing and industrial applications.' },
-    { title: 'Logistics optimization', description: 'Optimize your supply chain and logistics operations.' }
+    { title: 'Predictive maintenance', description: 'We build machine learning models that analyze sensor data to forecast equipment failures before they happen, helping you cut downtime and shift from reactive to condition-based maintenance.' },
+    { title: 'Digital twin development', description: 'ItGraf creates dynamic virtual replicas of your physical assets and processes, letting you simulate performance, test scenarios, and optimize operations in real time.' },
+    { title: 'Computer vision development', description: 'Our team engineers enterprise-grade computer vision solutions covering optical hardware design, embedded sensor fusion, and cloud-native processing.' },
+    { title: 'RPA services', description: 'We automate repetitive, rule-based workflows across your business systems with robotic process automation, freeing your teams to focus on higher-value work.' },
+    { title: 'Digital transformation', description: 'ItGraf creates a roadmap and implements your digital transformation strategy, automating and optimizing core processes to increase ROI and prepare your business for new market demands.' },
+    { title: 'Wearable app development', description: 'We design and develop applications for wearable devices, from fitness trackers to medical monitors, with close attention to battery life, UX, and the constraints of the specific device class.' }
   ]
 }
 
@@ -104,10 +114,36 @@ const servicesData: Record<string, Array<{ title: string; description: string }>
 const slugify = (name: string) =>
   name.toLowerCase().replace(/&/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 
+const partnerCtaAfterIndex = services.indexOf('Embedded Development')
+const productCtaAfterIndex = services.indexOf('Custom Software Development')
+
+type PageSegment =
+  | { type: 'services'; key: string; services: ServiceName[] }
+  | { type: 'partner-cta' }
+  | { type: 'product-cta' }
+
+const pageSegments = computed<PageSegment[]>(() => [
+  {
+    type: 'services',
+    key: 'before-partner-cta',
+    services: services.slice(0, partnerCtaAfterIndex + 1)
+  },
+  { type: 'partner-cta' },
+  {
+    type: 'services',
+    key: 'before-product-cta',
+    services: services.slice(partnerCtaAfterIndex + 1, productCtaAfterIndex + 1)
+  },
+  { type: 'product-cta' },
+  {
+    type: 'services',
+    key: 'after-product-cta',
+    services: services.slice(productCtaAfterIndex + 1)
+  }
+])
+
 // Активная услуга — та, чья секция сейчас в зоне видимости
 const activeService = ref<ServiceName>(props.initialService)
-const activeIndex = computed(() => services.indexOf(activeService.value))
-const progress = computed(() => activeIndex.value / (services.length - 1))
 
 const sectionEls: Record<string, HTMLElement> = {}
 const setSectionRef = (name: string) => (el: any) => {
@@ -159,84 +195,83 @@ onUnmounted(() => {
 
 <template>
   <section class="service-detail-page">
-    <div class="service-detail-page__container">
-      <aside class="service-detail-page__sidebar">
-        <nav class="service-detail-page__nav">
-          <ul class="service-detail-page__list">
-            <li v-for="service in services" :key="service" class="service-detail-page__item">
-              <button
-                :class="[
-                  'service-detail-page__link',
-                  { 'service-detail-page__link--active': service === activeService }
-                ]"
-                :aria-current="service === activeService ? 'true' : undefined"
-                @click="scrollToService(service)"
-              >
-                {{ service }}
-              </button>
-            </li>
-          </ul>
-          <div class="service-detail-page__progress" aria-hidden="true">
-            <span
-              class="service-detail-page__progress-bar"
-              :style="{ transform: `scaleY(${progress})` }"
-            />
-          </div>
-        </nav>
-      </aside>
+    <template v-for="segment in pageSegments" :key="segment.type === 'services' ? segment.key : segment.type">
+      <div v-if="segment.type === 'services'" class="service-detail-page__container">
+        <aside class="service-detail-page__sidebar">
+          <nav class="service-detail-page__nav">
+            <ul class="service-detail-page__list">
+              <li v-for="service in services" :key="service" class="service-detail-page__item">
+                <button
+                  :class="[
+                    'service-detail-page__link',
+                    { 'service-detail-page__link--active': service === activeService }
+                  ]"
+                  :aria-current="service === activeService ? 'true' : undefined"
+                  @click="scrollToService(service)"
+                >
+                  {{ service }}
+                </button>
+              </li>
+            </ul>
+            <ServiceExploreCases />
+          </nav>
+        </aside>
 
-      <div class="service-detail-page__content">
-        <section
-          v-for="service in services"
-          :key="service"
-          :id="slugify(service)"
-          :ref="setSectionRef(service)"
-          :data-service="service"
-          class="service-block"
-        >
-          <header class="service-block__header">
-            <h2 class="service-block__title">
-              <span>{{ getDisplayTitle(service).main }}</span>
-              <span class="service-block__accent">{{ getDisplayTitle(service).highlight }}</span>
-            </h2>
-            <a href="#contact" class="service-block__icon" aria-label="Contact for this service">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M7 17L17 7M17 7H9.5M17 7V15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
-              </svg>
-            </a>
-          </header>
-
-          <p class="service-block__description">
-            {{ serviceDescriptions[service] }}
-          </p>
-
-          <div class="service-block__grid">
-            <article
-              v-for="sub in servicesData[service]"
-              :key="sub.title"
-              class="service-card"
-            >
-              <div class="service-card__content">
-                <h3 class="service-card__title">{{ sub.title }}</h3>
-                <p class="service-card__description">{{ sub.description }}</p>
-              </div>
-              <a href="#contact" class="service-card__icon" aria-label="Learn more">
+        <div class="service-detail-page__content">
+          <section
+            v-for="service in segment.services"
+            :key="service"
+            :id="slugify(service)"
+            :ref="setSectionRef(service)"
+            :data-service="service"
+            class="service-block"
+          >
+            <header class="service-block__header">
+              <h2 class="service-block__title">
+                <span>{{ getDisplayTitle(service).main }}</span>
+                <span class="service-block__accent">{{ getDisplayTitle(service).highlight }}</span>
+              </h2>
+              <a href="#contact" class="service-block__icon" aria-label="Contact for this service">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M7 17L17 7M17 7H9.5M17 7V15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
                 </svg>
               </a>
-            </article>
-          </div>
-        </section>
+            </header>
+
+            <p class="service-block__description">
+              {{ serviceDescriptions[service] }}
+            </p>
+
+            <div class="service-block__grid">
+              <article
+                v-for="(sub, subIndex) in servicesData[service]"
+                :key="`${sub.title}-${subIndex}`"
+                :class="['service-card', { 'service-card--full': sub.fullWidth }]"
+              >
+                <div class="service-card__content">
+                  <h3 class="service-card__title">{{ sub.title }}</h3>
+                  <p class="service-card__description">{{ sub.description }}</p>
+                </div>
+                <a href="#contact" class="service-card__icon" aria-label="Learn more">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 17L17 7M17 7H9.5M17 7V15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                  </svg>
+                </a>
+              </article>
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
+
+      <ServicePartnerCta v-else-if="segment.type === 'partner-cta'" />
+      <ServiceProductPartnerCta v-else-if="segment.type === 'product-cta'" />
+    </template>
   </section>
 </template>
 
 <style scoped>
 .service-detail-page {
   background: #f5f5f5;
-  padding: 2rem;
 }
 
 .service-detail-page__container {
@@ -246,6 +281,7 @@ onUnmounted(() => {
   grid-template-columns: 280px 1fr;
   gap: 4rem;
   align-items: start;
+  padding: 2rem;
 }
 
 /* Сайдбар «прилипает», пока листаются услуги справа */
@@ -290,23 +326,6 @@ onUnmounted(() => {
   color: #111;
   font-weight: 600;
   transform: translateX(0.5rem);
-}
-
-.service-detail-page__progress {
-  position: relative;
-  width: 0.1875rem;
-  min-height: 5rem;
-  background: #e0e0e0;
-  border-radius: 0.125rem;
-  overflow: hidden;
-}
-
-.service-detail-page__progress-bar {
-  position: absolute;
-  inset: 0;
-  background: #103e3c;
-  transform-origin: top;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Правая лента секций */
@@ -398,6 +417,11 @@ onUnmounted(() => {
   transform: translateY(-4px);
 }
 
+.service-card--full {
+  grid-column: 1 / -1;
+  min-height: 200px;
+}
+
 .service-card__content {
   flex: 1;
 }
@@ -468,6 +492,7 @@ onUnmounted(() => {
   .service-detail-page__container {
     grid-template-columns: 1fr;
     gap: 2rem;
+    padding: 1.5rem;
   }
 
   .service-detail-page__sidebar {
@@ -480,17 +505,13 @@ onUnmounted(() => {
     gap: 0.75rem;
   }
 
-  .service-detail-page__progress {
-    display: none;
-  }
-
   .service-block__grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
-  .service-detail-page {
+  .service-detail-page__container {
     padding: 1.5rem 1rem;
   }
 
