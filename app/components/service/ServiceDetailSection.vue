@@ -203,7 +203,7 @@ const currentService = 'End-to-end IoT services'
 }
 
 .service-detail__highlight {
-  color: #ff6400;
+  color: #103e3c;
   display: inline;
 }
 

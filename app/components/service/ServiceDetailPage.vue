@@ -1,16 +1,27 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 
-const selectedService = ref<ServiceName>('End-to-End IoT Services')
-const cardsScrollContainer = ref<HTMLElement | null>(null)
+const services = [
+  'End-to-End IoT Services',
+  'Hardware Design & Development',
+  'Embedded Development',
+  'Rust Development',
+  'AI & ML Services',
+  'Data Services',
+  'Compliance and Security',
+  'IT Services',
+  'Custom Software Development',
+  'Cross-Industry Services'
+] as const
 
+type ServiceName = (typeof services)[number]
 
-// “Медленное” переключение по wheel: ставим состояние перехода и throttling
-const isTransitioning = ref(false)
-let wheelLockUntil = 0
+const props = withDefaults(
+  defineProps<{ initialService?: ServiceName }>(),
+  { initialService: 'End-to-End IoT Services' }
+)
 
-const currentCardIndex = ref(0)
-
+const emit = defineEmits<{ (e: 'change', service: ServiceName): void }>()
 
 const serviceDescriptions: Record<ServiceName, string> = {
   'End-to-End IoT Services': 'We provide truly comprehensive, ready-to-scale IoT solutions tailored for your business. Our expertise covers the full spectrum, from designing custom hardware and specialized firmware to building intuitive cloud platforms and responsive mobile applications, ensuring a unified and powerful system.',
@@ -89,25 +100,21 @@ const servicesData: Record<string, Array<{ title: string; description: string }>
   ]
 }
 
-const services = [
-  'End-to-End IoT Services',
-  'Hardware Design & Development',
-  'Embedded Development',
-  'Rust Development',
-  'AI & ML Services',
-  'Data Services',
-  'Compliance and Security',
-  'IT Services',
-  'Custom Software Development',
-  'Cross-Industry Services'
-] as const
+// slug для якорей и URL
+const slugify = (name: string) =>
+  name.toLowerCase().replace(/&/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 
-type ServiceName = (typeof services)[number]
+// Активная услуга — та, чья секция сейчас в зоне видимости
+const activeService = ref<ServiceName>(props.initialService)
+const activeIndex = computed(() => services.indexOf(activeService.value))
+const progress = computed(() => activeIndex.value / (services.length - 1))
 
+const sectionEls: Record<string, HTMLElement> = {}
+const setSectionRef = (name: string) => (el: any) => {
+  if (el) sectionEls[name] = el as HTMLElement
+}
 
-const currentSubServices = computed(() => {
-  return servicesData[selectedService.value as ServiceName] ?? []
-})
+let observer: IntersectionObserver | null = null
 
 const getDisplayTitle = (title: string) => {
   const parts = title.split(' ')
@@ -115,99 +122,113 @@ const getDisplayTitle = (title: string) => {
   return { main: parts.join(' '), highlight: lastWord }
 }
 
-const handleScroll = (e: WheelEvent) => {
-  const container = cardsScrollContainer.value
-  if (!container) return
-
-  e.preventDefault()
-
-  if (e.deltaY > 0) {
-    // Scroll down - next service
-    const currentIndex = services.indexOf(selectedService.value)
-    if (currentIndex < services.length - 1) {
-      selectedService.value = services[currentIndex + 1]
-      currentCardIndex.value = 0
-    }
-  } else {
-    // Scroll up - previous service
-    const currentIndex = services.indexOf(selectedService.value)
-    if (currentIndex > 0) {
-      selectedService.value = services[currentIndex - 1]
-      currentCardIndex.value = 0
-    }
-  }
+// Клик по пункту слева — плавный скролл к секции
+const scrollToService = (name: ServiceName) => {
+  sectionEls[name]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 onMounted(() => {
-  if (cardsScrollContainer.value) {
-    cardsScrollContainer.value.addEventListener('wheel', handleScroll, { passive: false })
+  // Подсветка активной услуги по тому, что в центре экрана
+  observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+      if (visible) {
+        const name = (visible.target as HTMLElement).dataset.service as ServiceName
+        if (name && name !== activeService.value) {
+          activeService.value = name
+          emit('change', name)
+        }
+      }
+    },
+    { rootMargin: '-40% 0px -40% 0px', threshold: [0, 0.25, 0.5, 1] }
+  )
+  Object.values(sectionEls).forEach((el) => observer?.observe(el))
+
+  // Если открыли с конкретной услугой в URL — проскроллим к ней
+  if (props.initialService && props.initialService !== services[0]) {
+    nextTick(() => scrollToService(props.initialService))
   }
 })
 
 onUnmounted(() => {
-  if (cardsScrollContainer.value) {
-    cardsScrollContainer.value.removeEventListener('wheel', handleScroll)
-  }
+  observer?.disconnect()
 })
 </script>
 
 <template>
   <section class="service-detail-page">
-<div class="service-detail-page__container">
-      <a id="End-to-End IoTServices" class="sr-only" aria-hidden="true" />
-      <a id="Hardware Design &Development" class="sr-only" aria-hidden="true" />
-      <a id="EmbeddedDevelopment" class="sr-only" aria-hidden="true" />
+    <div class="service-detail-page__container">
       <aside class="service-detail-page__sidebar">
         <nav class="service-detail-page__nav">
           <ul class="service-detail-page__list">
             <li v-for="service in services" :key="service" class="service-detail-page__item">
-              <button 
+              <button
                 :class="[
                   'service-detail-page__link',
-                  { 'service-detail-page__link--active': service === selectedService }
+                  { 'service-detail-page__link--active': service === activeService }
                 ]"
-                :aria-current="service === selectedService ? 'page' : undefined"
-                @click="selectedService = service"
+                :aria-current="service === activeService ? 'true' : undefined"
+                @click="scrollToService(service)"
               >
                 {{ service }}
               </button>
             </li>
           </ul>
+          <div class="service-detail-page__progress" aria-hidden="true">
+            <span
+              class="service-detail-page__progress-bar"
+              :style="{ transform: `scaleY(${progress})` }"
+            />
+          </div>
         </nav>
       </aside>
 
-      <main class="service-detail-page__main">
-        <div class="service-detail-page__header">
-          <h1 class="service-detail-page__title">
-            <span>{{ getDisplayTitle(selectedService).main }}</span>
-            <span class="service-detail-page__accent">{{ getDisplayTitle(selectedService).highlight }}</span>
-          </h1>
-
-          <a href="#contact" class="service-detail-page__header-icon" aria-label="Contact for this service">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M7 17L17 7M17 7H9.5M17 7V15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
-            </svg>
-          </a>
-        </div>
-
-        <p class="service-detail-page__description">
-          {{ serviceDescriptions[selectedService] }}
-        </p>
-
-        <div class="service-detail-page__grid" ref="cardsScrollContainer">
-          <article v-for="service in currentSubServices" :key="service.title" class="service-detail-page__card">
-            <div class="service-detail-page__card-content">
-              <h3 class="service-detail-page__card-title">{{ service.title }}</h3>
-              <p class="service-detail-page__card-description">{{ service.description }}</p>
-            </div>
-            <a href="#contact" class="service-detail-page__card-icon" aria-label="Learn more">
+      <div class="service-detail-page__content">
+        <section
+          v-for="service in services"
+          :key="service"
+          :id="slugify(service)"
+          :ref="setSectionRef(service)"
+          :data-service="service"
+          class="service-block"
+        >
+          <header class="service-block__header">
+            <h2 class="service-block__title">
+              <span>{{ getDisplayTitle(service).main }}</span>
+              <span class="service-block__accent">{{ getDisplayTitle(service).highlight }}</span>
+            </h2>
+            <a href="#contact" class="service-block__icon" aria-label="Contact for this service">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M7 17L17 7M17 7H9.5M17 7V15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
               </svg>
             </a>
-          </article>
-        </div>
-      </main>
+          </header>
+
+          <p class="service-block__description">
+            {{ serviceDescriptions[service] }}
+          </p>
+
+          <div class="service-block__grid">
+            <article
+              v-for="sub in servicesData[service]"
+              :key="sub.title"
+              class="service-card"
+            >
+              <div class="service-card__content">
+                <h3 class="service-card__title">{{ sub.title }}</h3>
+                <p class="service-card__description">{{ sub.description }}</p>
+              </div>
+              <a href="#contact" class="service-card__icon" aria-label="Learn more">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 17L17 7M17 7H9.5M17 7V15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+                </svg>
+              </a>
+            </article>
+          </div>
+        </section>
+      </div>
     </div>
   </section>
 </template>
@@ -215,28 +236,29 @@ onUnmounted(() => {
 <style scoped>
 .service-detail-page {
   background: #f5f5f5;
-  padding: 2rem 2rem;
+  padding: 2rem;
 }
 
 .service-detail-page__container {
   max-width: 1440px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 250px 1fr;
+  grid-template-columns: 280px 1fr;
   gap: 4rem;
+  align-items: start;
 }
 
+/* Сайдбар «прилипает», пока листаются услуги справа */
 .service-detail-page__sidebar {
-  display: flex;
-  flex-direction: column;
-}
-
-.service-detail-page__nav {
   position: sticky;
   top: 2rem;
   height: fit-content;
-  max-height: calc(100vh - 4rem);
-  overflow-y: auto;
+}
+
+.service-detail-page__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .service-detail-page__list {
@@ -248,20 +270,16 @@ onUnmounted(() => {
   gap: 1rem;
 }
 
-.service-detail-page__item {
-  display: block;
-}
-
 .service-detail-page__link {
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: #999;
+  font-size: 0.95rem;
+  color: #b0b0b0;
   text-align: left;
-  transition: color 0.3s ease;
   font-weight: 400;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .service-detail-page__link:hover {
@@ -271,38 +289,63 @@ onUnmounted(() => {
 .service-detail-page__link--active {
   color: #111;
   font-weight: 600;
+  transform: translateX(0.5rem);
 }
 
-.service-detail-page__main {
+.service-detail-page__progress {
+  position: relative;
+  width: 0.1875rem;
+  min-height: 5rem;
+  background: #e0e0e0;
+  border-radius: 0.125rem;
+  overflow: hidden;
+}
+
+.service-detail-page__progress-bar {
+  position: absolute;
+  inset: 0;
+  background: #103e3c;
+  transform-origin: top;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Правая лента секций */
+.service-detail-page__content {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 5rem;
 }
 
-.service-detail-page__header {
+.service-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  scroll-margin-top: 2rem;
+}
+
+.service-block__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 2rem;
-  padding-bottom: 2rem;
+  padding-bottom: 1.5rem;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.service-detail-page__title {
+.service-block__title {
   margin: 0;
-  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-size: clamp(2rem, 4.5vw, 3rem);
   font-weight: 400;
   line-height: 1.2;
   color: #111;
 }
 
-.service-detail-page__accent {
-  color: #ff6400;
+.service-block__accent {
+  color: #103e3c;
   display: inline;
-  font-weight: 400;
 }
 
-.service-detail-page__header-icon {
+.service-block__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -312,20 +355,20 @@ onUnmounted(() => {
   border-radius: 50%;
   color: #fff;
   text-decoration: none;
-  transition: background 0.3s ease;
   flex-shrink: 0;
+  transition: background 0.3s ease;
 }
 
-.service-detail-page__header-icon:hover {
+.service-block__icon:hover {
   background: #333;
 }
 
-.service-detail-page__header-icon svg {
+.service-block__icon svg {
   width: 1.5rem;
   height: 1.5rem;
 }
 
-.service-detail-page__description {
+.service-block__description {
   margin: 0;
   font-size: 1.125rem;
   line-height: 1.7;
@@ -333,40 +376,40 @@ onUnmounted(() => {
   max-width: 90%;
 }
 
-.service-detail-page__description strong {
-  color: #111;
-  font-weight: 600;
-}
-
-.service-detail-page__grid {
+.service-block__grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
 }
 
-.service-detail-page__card {
+.service-card {
   background: #e8e8e8;
   padding: 2.5rem;
   border-radius: 1.5rem;
-  transition: background 0.3s ease;
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 250px;
+  min-height: 230px;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.service-detail-page__card-content {
+.service-card:hover {
+  background: #ddd;
+  transform: translateY(-4px);
+}
+
+.service-card__content {
   flex: 1;
 }
 
-.service-detail-page__card-title {
-  margin: 0 0 1.5rem 0;
+.service-card__title {
+  margin: 0 0 1.25rem 0;
   font-size: 1.5rem;
   font-weight: 600;
   color: #111;
 }
 
-.service-detail-page__card-description {
+.service-card__description {
   margin: 0;
   font-size: 1rem;
   line-height: 1.6;
@@ -374,7 +417,7 @@ onUnmounted(() => {
   padding-right: 3rem;
 }
 
-.service-detail-page__card-icon {
+.service-card__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -384,31 +427,41 @@ onUnmounted(() => {
   border-radius: 50%;
   color: #fff;
   text-decoration: none;
-  transition: background 0.3s ease;
-  flex-shrink: 0;
   position: absolute;
   bottom: 2rem;
   right: 2rem;
+  transition: background 0.3s ease;
 }
 
-.service-detail-page__card-icon:hover {
+.service-card__icon:hover {
   background: #333;
 }
 
-.service-detail-page__card-icon svg {
+.service-card__icon svg {
   width: 1.2rem;
   height: 1.2rem;
 }
 
-.service-detail-page__card:hover {
-  background: #ddd;
+/* Появление карточек при въезде в экран (fade + slide) */
+@keyframes card-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(2.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.service-detail-page__card-description {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #666;
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .service-card {
+      animation: card-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
 }
 
 @media (max-width: 1024px) {
@@ -417,18 +470,21 @@ onUnmounted(() => {
     gap: 2rem;
   }
 
-  .service-detail-page__nav {
+  .service-detail-page__sidebar {
     position: static;
-    max-height: none;
   }
 
   .service-detail-page__list {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.8rem;
+    gap: 0.75rem;
   }
 
-  .service-detail-page__grid {
+  .service-detail-page__progress {
+    display: none;
+  }
+
+  .service-block__grid {
     grid-template-columns: 1fr;
   }
 }
@@ -438,19 +494,15 @@ onUnmounted(() => {
     padding: 1.5rem 1rem;
   }
 
-  .service-detail-page__container {
-    gap: 1.5rem;
-  }
-
-  .service-detail-page__title {
-    font-size: 2rem;
-  }
-
-  .service-detail-page__header {
+  .service-block__header {
     flex-direction: column;
   }
 
-  .service-detail-page__description {
+  .service-block__title {
+    font-size: 2rem;
+  }
+
+  .service-block__description {
     max-width: 100%;
   }
 }

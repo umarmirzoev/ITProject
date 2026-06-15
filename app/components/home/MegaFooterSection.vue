@@ -198,7 +198,7 @@ const legalLinks = [
   overflow: hidden;
   border-radius: 1.1rem;
   border-top: 0.0625rem solid rgba(255, 255, 255, 0.45);
-  background: radial-gradient(circle at top right, rgba(255, 129, 32, 0.09), transparent 24%), #030303;
+  background: radial-gradient(circle at top right, rgba(16, 62, 60, 0.09), transparent 24%), #030303;
   color: #f8f8f8;
   box-shadow: 0 1.25rem 3rem rgba(0, 0, 0, 0.16);
 }

@@ -10,6 +10,14 @@ import HomePartnerSection from '~/components/home/HomePartnerSection.vue'
 import HomeReferralBannerSection from '~/components/home/ReferralBannerSection.vue'
 import HomeServicesSection from '~/components/home/ServicesSection.vue'
 import HomeTrustSection from '~/components/home/HomeTrustSection.vue'
+
+useSeoMeta({
+  title: 'ItGraf — End-to-End IoT, Hardware & Embedded Engineering',
+  description: 'ItGraf builds ready-to-scale IoT solutions: custom hardware, firmware, cloud platforms, and mobile apps.',
+  ogTitle: 'ItGraf — End-to-End IoT, Hardware & Embedded Engineering',
+  ogDescription: 'Ready-to-scale IoT solutions from hardware to cloud.',
+  ogType: 'website'
+})
 </script>
 
 <template>
